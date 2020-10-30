@@ -38,10 +38,47 @@ router.post('/add-game-creator', (req, res) => {
 
 router.get('/get-game-creator', (req, res) => {
   GameCreator.find()
+    .sort({ date: -1 })
     .then(data => {
       res.status(200).send(data);
     })
     .catch(() => res.status(400).send('NO DATA'));
+});
+
+router.get('/sort/firstname', (req, res) => {
+  GameCreator.aggregate(
+    [
+      {
+        $project: {
+          firstname: 1,
+          lastname: 1,
+          lower: { $toLower: '$firstname' },
+        },
+      },
+      { $sort: { lower: 1 } },
+    ],
+    function (err, results) {
+      res.status(200).send(results);
+    }
+  );
+});
+
+router.get('/sort/lastname', (req, res) => {
+  GameCreator.aggregate(
+    [
+      {
+        $project: {
+          firstname: 1,
+          lastname: 1,
+          lower: { $toLower: '$lastname' },
+        },
+      },
+      { $sort: { lower: 1 } },
+    ],
+    function (err, results) {
+      res.status(200).send(results);
+    }
+  );
 });
 
 router.put('/game-creator/:id', (req, res) => {

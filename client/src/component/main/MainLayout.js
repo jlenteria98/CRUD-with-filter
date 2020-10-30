@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   addCreator,
   getCreator,
+  isLoadingForm,
   showAddForm,
 } from '../../action/CreatorAction';
 
@@ -18,7 +19,8 @@ const MainLayout = () => {
   const dispatch = useDispatch();
   const error = useSelector(state => state.error);
   const creators = useSelector(state => state.creators);
-  var { showForm } = creators;
+  const { showForm } = creators;
+  const { creator } = creators;
   const { errors } = error;
 
   useEffect(() => {
@@ -63,16 +65,6 @@ const MainLayout = () => {
           >
             <i className="fa fa-plus " style={{ fontSize: 18 }} />
           </button>
-        </div>
-        <div className="filter-div mb-3 mt-5">
-          <div className="filter">
-            <select className="form-control">
-              <option value="date">Date</option>
-              <option value="firstname">Firstname</option>
-              <option value="lastname">Lastname</option>
-            </select>
-          </div>
-          <input type="text" placeholder="search" className="form-control" />
         </div>
       </div>
 

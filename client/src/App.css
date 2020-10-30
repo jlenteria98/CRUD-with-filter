@@ -23,7 +23,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 23%;
+  width: 24%;
 }
 
 .filter-div input {
@@ -98,4 +98,11 @@
 }
 .form-group button {
   width: 100%;
+}
+
+/*Delete */
+.spinner-div {
+  width: 50%;
+  margin: 50px auto;
+  text-align: center;
 }
