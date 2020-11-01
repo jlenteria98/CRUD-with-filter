@@ -7,3 +7,4 @@ export const SORT_BY_DATE = 'SORT_BY_DATE';
 export const SORT_BY_FIRSTNAME = 'SORT_BY_FIRSTNAME';
 export const SORT_BY_LASTNAME = 'SORT_BY_LASTNAME';
 export const SEARCH = 'SEARCH';
+export const PICK_CREATOR = 'PICK_CREATOR';

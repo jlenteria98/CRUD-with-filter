@@ -1,5 +1,4 @@
 const express = require('express');
-const { update } = require('../model/GameCreator');
 const router = express.Router();
 const GameCreator = require('../model/GameCreator');
 
@@ -120,3 +119,5 @@ router.delete('/game-creator/:id', (req, res) => {
 });
 
 module.exports = router;
+
+router.get('/creator/:fnam&lname', (req, res) => {});

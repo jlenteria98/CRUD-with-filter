@@ -107,3 +107,20 @@ export const sortByLastname = () => dispatch => {
     type: SORT_BY_LASTNAME,
   });
 };
+
+export const pickCreator = (firstname, lastname) => dispatch => {
+  axios
+    .get(`/api/creator/${firstname}&${lastname}`)
+    .then(res =>
+      dispatch({
+        type: GET_CREATOR,
+        payload: res.data,
+      })
+    )
+    .catch(err =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data,
+      })
+    );
+};

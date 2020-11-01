@@ -1,30 +1,35 @@
 import React, { useEffect, useState } from 'react';
+
 import { useDispatch, useSelector } from 'react-redux';
+
 import {
   isLoadingForm,
   deleteCreator,
   getCreator,
   showUpdateForm,
-  updateCreator,
   sortByFirstname,
   sortByLastName,
 } from '../../action/CreatorAction';
+
 import Spinner from '../common/Spinner';
+import EditLayout from './EditLayout';
+import FilterLayout from './FilterLayout';
 
 const CreatorList = () => {
   const [state, setState] = useState({
-    firstname: '',
-    lastname: '',
+    _firstname: '',
+    _lastname: '',
     _id: '',
     data: [],
     sortBy: '',
+    search: '',
   });
 
-  const { firstname, lastname, _id, sortBy } = state;
+  const { _id, _firstname, _lastname, search, sortBy } = state;
   const dispatch = useDispatch();
-  const error = useSelector(state => state.error);
+
   const creators = useSelector(state => state.creators);
-  const { errors } = error;
+
   const { showUpdate } = creators;
   const { isLoading } = creators;
   const { creator } = creators;
@@ -33,12 +38,11 @@ const CreatorList = () => {
     dispatch(getCreator());
   }, [dispatch]);
 
-  const handleClick = name => {};
-
   const handleEditClick = (id, firstName, lastName) => {
     dispatch(showUpdateForm());
-    setState({ ...state, _id: id, firstname: firstName, lastname: lastName });
+    setState({ ...state, _id: id, _firstname: firstName, _lastname: lastName });
   };
+
   const handleDeleteClick = _id => {
     setTimeout(() => {
       dispatch(deleteCreator(_id));
@@ -46,51 +50,32 @@ const CreatorList = () => {
     dispatch(isLoadingForm());
   };
 
-  const backClick = () => {
-    dispatch(getCreator());
-  };
-
   const handleChange = text => e => {
     if (e.target.value === 'firstname') {
       dispatch(sortByFirstname());
     } else if (e.target.value === 'lastname') {
       dispatch(sortByLastName());
+    } else if (e.target.value === 'date') {
+      dispatch(getCreator());
     }
     setState({ ...state, [text]: e.target.value });
   };
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    const data = {
-      firstname,
-      lastname,
-    };
-    dispatch(updateCreator(data, _id));
+  const searchHandle = e => {
+    setState({ search: e.target.value });
   };
-  const searchHandle = e => {};
+
+  const filteredData = creator.filter(item => {
+    return item.firstname.toLowerCase().includes(search.toLowerCase());
+  });
 
   return (
     <div>
-      <div className="filter-div mb-3 mt-5">
-        <div className="filter">
-          <select
-            name="sortBy"
-            className="form-control"
-            value={sortBy}
-            onChange={handleChange('sortBy')}
-          >
-            <option value="date">Sort by</option>
-            <option value="firstname">Firstname</option>
-            <option value="lastname">Lastname</option>
-          </select>
-        </div>
-        <input
-          type="text"
-          placeholder="search"
-          className="form-control"
-          onChange={searchHandle}
-        />
-      </div>
+      <FilterLayout
+        searchHandle={searchHandle}
+        handleChange={handleChange}
+        sortBy={sortBy}
+      />
       {isLoading ? (
         <Spinner />
       ) : (
@@ -104,9 +89,9 @@ const CreatorList = () => {
                     <th></th>
                   </tr>
                 </thead>
-                {creator.map((item, index) => (
+                {filteredData.map((item, index) => (
                   <tbody key={index}>
-                    <tr onClick={() => handleClick(item.firstname)}>
+                    <tr>
                       <td>
                         {item.firstname} {item.lastname}
                       </td>
@@ -143,42 +128,11 @@ const CreatorList = () => {
                 ))}
               </table>
               {showUpdate ? (
-                <div className="post-creator">
-                  <div className="post-header">
-                    <button type="button" onClick={backClick}>
-                      <i
-                        className="fa fa-arrow-circle-left fa-2x"
-                        aria-hidden="true"
-                      />
-                    </button>
-                    <h5 className="mr-2">Update Creator</h5>
-                    <p></p>
-                  </div>
-                  <form onSubmit={handleSubmit}>
-                    <div className="form-group mt-4">
-                      <input
-                        value={firstname}
-                        onChange={handleChange('firstname')}
-                        name="firstname"
-                        type="text"
-                        className="form-control mt-2"
-                        placeholder="Firstname"
-                      />
-                      <span style={{ color: 'red' }}>{errors.firstname}</span>
-                      <input
-                        onChange={handleChange('lastname')}
-                        value={lastname}
-                        type="text"
-                        className="form-control mt-2"
-                        placeholder="Lastname"
-                      />
-                      <span style={{ color: 'red' }}>{errors.lastname}</span>
-                      <button type="submit" className="btn btn-primary mt-4">
-                        Update
-                      </button>
-                    </div>
-                  </form>
-                </div>
+                <EditLayout
+                  _id={_id}
+                  _firstname={_firstname}
+                  _lastname={_lastname}
+                />
               ) : null}
             </div>
           ) : (
